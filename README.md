@@ -58,6 +58,7 @@ static validation or simulation output as a benchmark result.
 | [Security](docs/SECURITY.md) | secrets, RBAC, MCP and tool boundaries |
 | [Architecture decisions](docs/DECISIONS.md) | current project decisions and reasons |
 | [Roadmap](ROADMAP.md) | planned work and explicit prerequisites |
+| [Agent instructions](AGENTS.md) | operating rules for coding agents in this repository |
 
 ## Repository layout
 

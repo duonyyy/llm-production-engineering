@@ -15,6 +15,7 @@ shared contracts that make the labs comparable.
 | validate a change | [Testing](TESTING.md) |
 | add an MCP tool or Kubernetes permission | [Security](SECURITY.md) |
 | understand a trade-off | [Architecture decisions](DECISIONS.md) |
+| make an agent-led change | [Agent instructions](../AGENTS.md), then [Contributing](../CONTRIBUTING.md) |
 
 ## Documentation contract
 
