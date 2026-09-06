@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lab02-endpoint-picker-policy
+  namespace: lab02-kubernetes-llm
+  labels:
+    app.kubernetes.io/name: lab02-vllm
+    app.kubernetes.io/component: routing-policy
+data:
+  policy.json: |
+    {
+      "mode": "policy-input-only",
+      "warning": "This ConfigMap is not a Gateway API or Inference Extension CRD.",
+      "candidate_backends": ["lab02-vllm-predictor"],
+      "scoring": {
+        "cache_locality_weight": 0.45,
+        "queue_weight": 0.35,
+        "running_weight": 0.20
+      },
+      "rules": [
+        "prefer a backend with the requested prefix cached",
+        "reject cache preference when normalized queue is above the overload threshold",
+        "keep a bounded per-prefix affinity window to avoid hotspot formation",
+        "fall back to load-aware round robin when cache metadata is missing"
+      ],
+      "experiment": {
+        "workloads": ["prefix_a_repeated", "prefix_b_repeated", "random_control"],
+        "metrics": ["ttft_p95", "prefix_hit_ratio", "queue_p95", "backend_share"]
+      }
+    }

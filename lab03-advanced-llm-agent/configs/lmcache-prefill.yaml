@@ -1,0 +1,32 @@
+schema_version: lab03/v1
+profile: pd-reference-prefill
+status: version-sensitive-template
+warning: "Requires Linux, two compatible NVIDIA GPUs, and a validated vLLM/LMCache/NIXL compatibility matrix. It is not runnable on the current 4 GB single-GPU device."
+versions:
+  vllm: 0.23.0
+  lmcache: 0.5.4
+  nixl: 1.4.0
+  python: '3.12'
+model: Qwen/Qwen2.5-0.5B-Instruct
+role: prefill
+server:
+  host: 127.0.0.1
+  port: 8101
+  gpu: '0'
+  max_model_len: 4096
+  gpu_memory_utilization: 0.80
+kv_transfer_config:
+  kv_connector: LMCacheMPConnector
+  kv_connector_module_path: lmcache.integration.vllm.lmcache_mp_connector
+  kv_role: kv_both
+  kv_connector_extra_config:
+    lmcache.mp.host: 127.0.0.1
+    lmcache.mp.port: 5555
+request_contract:
+  prefill_extra_body:
+    return_token_ids: true
+    kv_transfer_params:
+      do_remote_decode: true
+notes:
+  - "The connector name, module path, and MP endpoint keys are taken from the current LMCache quickstart; validate them again after every version change."
+  - "This file describes a P/D handoff contract. It does not prove that a local RTX 3050 can execute it."

@@ -1,0 +1,26 @@
+# Python runtime artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Node/TypeScript build artifacts
+node_modules/
+dist/
+
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+
+# Local runtime state and logs
+*.sqlite3
+*.log
+*.pid
+
+# Generated benchmark tables; keep the directory marker
+**/results/*.csv
+**/results/*.json
+**/results/*.log
+!**/results/.gitkeep

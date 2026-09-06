@@ -1,0 +1,32 @@
+schema_version: lab03/v1
+profile: pd-reference-decode
+status: version-sensitive-template
+warning: "Requires Linux, two compatible NVIDIA GPUs, and a validated vLLM/LMCache/NIXL compatibility matrix. It is not runnable on the current 4 GB single-GPU device."
+versions:
+  vllm: 0.23.0
+  lmcache: 0.5.4
+  nixl: 1.4.0
+  python: '3.12'
+model: Qwen/Qwen2.5-0.5B-Instruct
+role: decode
+server:
+  host: 127.0.0.1
+  port: 8102
+  gpu: '1'
+  max_model_len: 4096
+  gpu_memory_utilization: 0.80
+kv_transfer_config:
+  kv_connector: LMCacheMPConnector
+  kv_connector_module_path: lmcache.integration.vllm.lmcache_mp_connector
+  kv_role: kv_both
+  kv_connector_extra_config:
+    lmcache.mp.host: 127.0.0.1
+    lmcache.mp.port: 5555
+request_contract:
+  decode_extra_body:
+    kv_transfer_params:
+      do_remote_prefill: true
+      prompt_token_ids: '<copy-from-prefill-response>'
+notes:
+  - "The prompt_token_ids handoff is required by the documented experimental P/D flow when the decode side should reuse prefill tokenization."
+  - "Transfer time must be measured or reported as unavailable; it is never assumed to be zero."

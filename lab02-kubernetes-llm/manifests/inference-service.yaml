@@ -1,0 +1,101 @@
+# KServe v0.20.0 / InferenceService v1beta1.
+# This is a custom predictor: vLLM owns the OpenAI-compatible HTTP server.
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: lab02-vllm
+  namespace: lab02-kubernetes-llm
+  labels:
+    app.kubernetes.io/name: lab02-vllm
+    app.kubernetes.io/part-of: llm-production-course
+    app.kubernetes.io/component: inference
+  annotations:
+    serving.kserve.io/deploymentMode: Standard
+spec:
+  predictor:
+    serviceAccountName: lab02-inference
+    automountServiceAccountToken: false
+    minReplicas: 1
+    maxReplicas: 2
+    # CPU HPA is deliberately the generic baseline for Standard mode.
+    # Queue/TTFT/KV signals are documented separately and require an external adapter/KEDA.
+    autoScaling:
+      metrics:
+        - type: Resource
+          resource:
+            name: cpu
+            target:
+              type: Utilization
+              averageUtilization: 70
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          policies:
+            - type: Pods
+              value: 1
+              periodSeconds: 60
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          policies:
+            - type: Pods
+              value: 1
+              periodSeconds: 120
+    labels:
+      app.kubernetes.io/name: lab02-vllm
+      lab: lab02
+    containers:
+      - name: kserve-container
+        image: vllm/vllm-openai:v0.8.3
+        imagePullPolicy: IfNotPresent
+        command: ["vllm", "serve"]
+        args:
+          - Qwen/Qwen2.5-0.5B-Instruct
+          - --host
+          - 0.0.0.0
+          - --port
+          - "8000"
+          - --max-model-len
+          - "4096"
+          - --gpu-memory-utilization
+          - "0.80"
+          - --cpu-offload-gb
+          - "1"
+          - --enable-prefix-caching
+          - --disable-log-requests
+        ports:
+          - name: http
+            containerPort: 8000
+            protocol: TCP
+        env:
+          - name: HF_HOME
+            value: /tmp/huggingface
+          - name: HF_HUB_DISABLE_TELEMETRY
+            value: "1"
+        resources:
+          requests:
+            cpu: "1"
+            memory: 4Gi
+          limits:
+            cpu: "2"
+            memory: 6Gi
+            nvidia.com/gpu: "1"
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 90
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          seccompProfile:
+            type: RuntimeDefault

@@ -1,0 +1,52 @@
+# This file contains observable scaling signals and a safe optional KEDA template.
+# The active default autoscaler is the KServe-managed CPU HPA in inference-service.yaml.
+# Do not apply the KEDA document until the generated KServe Deployment name and Prometheus
+# service URL have been verified on the target cluster.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: lab02-vllm-scaling-signals
+  namespace: lab02-kubernetes-llm
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: lab02-vllm-scaling-signals
+      rules:
+        - record: lab02:vllm_queue_depth
+          expr: max(vllm:num_requests_waiting{namespace="lab02-kubernetes-llm"})
+        - record: lab02:vllm_running_requests
+          expr: sum(vllm:num_requests_running{namespace="lab02-kubernetes-llm"})
+        - record: lab02:vllm_kv_cache_pressure
+          expr: max(vllm:gpu_cache_usage_perc{namespace="lab02-kubernetes-llm"})
+        - alert: Lab02InferenceQueueGrowing
+          expr: lab02:vllm_queue_depth > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Lab02 inference queue is non-empty"
+            description: "Queue signal can justify an inference-aware scaler only after metric availability is verified."
+---
+# Optional: KEDA v2.19.0 Prometheus scaler template.
+# Replace targetDeployment and serverAddress after inspecting the live cluster.
+# This document is intentionally commented out so deploy_model.sh cannot create a
+# scaler with an invented KServe-generated Deployment name.
+# apiVersion: keda.sh/v1alpha1
+# kind: ScaledObject
+# metadata:
+#   name: lab02-vllm-queue
+#   namespace: lab02-kubernetes-llm
+# spec:
+#   scaleTargetRef:
+#     name: <verified-kserve-deployment>
+#   minReplicaCount: 1
+#   maxReplicaCount: 2
+#   pollingInterval: 15
+#   cooldownPeriod: 300
+#   triggers:
+#     - type: prometheus
+#       metadata:
+#         serverAddress: http://<verified-prometheus-service>:9090
+#         query: max(vllm:num_requests_waiting{namespace="lab02-kubernetes-llm"})
+#         threshold: "1"

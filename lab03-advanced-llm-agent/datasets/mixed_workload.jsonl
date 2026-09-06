@@ -1,0 +1,4 @@
+{"id":"short-short","shape":"short_input_short_output","prefix_key":"X","max_tokens":16,"prompt":"Define TTFT and TPOT."}
+{"id":"long-short","shape":"long_input_short_output","prefix_key":"X","max_tokens":16,"prompt":"Long prompt marker: prefill handles many prompt tokens and creates KV; decode generates token by token. Explain the main SLO for each phase and why this is not an absolute rule."}
+{"id":"short-long","shape":"short_input_long_output","prefix_key":"Y","max_tokens":64,"prompt":"Give a careful explanation of why decode scheduling and memory pressure matter for long output."}
+{"id":"long-long","shape":"long_input_long_output","prefix_key":"Y","max_tokens":64,"prompt":"Long prompt marker: compare colocated serving with a two-process prefill/decode deployment. Include transfer overhead, cache locality, failure recovery, and a no-fabrication measurement rule."}

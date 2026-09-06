@@ -1,0 +1,22 @@
+# Lab 01 — LLM Serving với vLLM: Dependencies
+# Các version dưới đây là client environment lock của Lab 01.
+# Khi thay đổi một version, phải chạy lại smoke test và benchmark validation.
+
+# --- Inference Engine (cài riêng hoặc chạy qua Docker) ---
+# vllm==0.8.3  # Cài trên server hoặc dùng Docker image; xem scripts/start_vllm.sh
+
+# --- Benchmark Client ---
+httpx==0.28.1               # HTTP client hỗ trợ async + streaming SSE
+aiohttp==3.14.3             # Fallback async HTTP nếu cần
+
+# --- Phân tích & Trực quan ---
+pandas==2.3.3               # Xử lý CSV/JSON kết quả
+matplotlib==3.10.9          # Biểu đồ
+numpy==2.5.2                # Tính toán percentile
+
+# --- Tiện ích ---
+tqdm==4.67.1                # Progress bar cho benchmark
+
+# Tokenizer fallback (tùy chọn về workflow, nhưng được pin trong client env này):
+# dùng cùng tokenizer với model đang serve để ước tính token count.
+transformers==5.10.2

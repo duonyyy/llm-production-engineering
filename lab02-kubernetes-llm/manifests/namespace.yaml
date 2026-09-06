@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lab02-kubernetes-llm
+  labels:
+    app.kubernetes.io/part-of: llm-production-course
+    app.kubernetes.io/component: lab02
+    # Audit/warn first: KServe/vLLM image securityContext must be verified on the target cluster
+    # before changing enforce to restricted.
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted

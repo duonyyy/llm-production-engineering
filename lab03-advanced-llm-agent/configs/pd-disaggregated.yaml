@@ -1,0 +1,28 @@
+schema_version: lab03/v1
+profile: pd-reference-nixl
+status: version-sensitive-template
+warning: "Reference architecture only on this device. Do not run until the NIXL compatibility matrix and host topology are checked."
+versions:
+  vllm: 0.23.0
+  lmcache: 0.5.4
+  nixl: 1.4.0
+topology:
+  prefill_gpu: 0
+  decode_gpu: 1
+  transfer_network: localhost-tcp-or-supported-intra-host-backend
+  production_claim: false
+connector:
+  kv_transfer_config:
+    kv_connector: NixlConnector
+    kv_role: kv_both
+    kv_buffer_device: cuda
+    kv_connector_extra_config:
+      backends: [UCX]
+timing_model:
+  formula: T_route + T_prefill + T_KV_transfer + T_decode
+  transfer_time_policy: measured-or-NA
+  note: "The NIXL connector and backends are version-sensitive. This exact key set is based on the current vLLM disaggregated-prefill documentation, not an assertion that this host supports UCX."
+fallback:
+  on_transfer_failure: recompute
+  availability: preserved-if-decode-or-colocated-capacity-remains
+  performance: degraded-and-must-be-recorded

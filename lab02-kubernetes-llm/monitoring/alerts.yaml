@@ -1,0 +1,43 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: lab02-vllm-alerts
+  namespace: lab02-kubernetes-llm
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+    - name: lab02-vllm-slo
+      rules:
+        - alert: Lab02TTFTP95High
+          expr: histogram_quantile(0.95, sum by (le) (rate(vllm:time_to_first_token_seconds_bucket{namespace="lab02-kubernetes-llm"}[5m]))) > 0.5
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Lab02 TTFT p95 is above the lab threshold"
+            description: "0.5 seconds is a lab example, not an industry SLO. Replace with the report's chosen SLO."
+        - alert: Lab02QueueNonEmpty
+          expr: max(vllm:num_requests_waiting{namespace="lab02-kubernetes-llm"}) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Lab02 request queue is non-empty"
+            description: "Correlate queue with TTFT/E2E and KV pressure before scaling."
+        - alert: Lab02GPUCachePressure
+          expr: max(vllm:gpu_cache_usage_perc{namespace="lab02-kubernetes-llm"}) > 0.90
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Lab02 GPU cache pressure is high"
+            description: "Metric name and scale must be verified against the live vLLM version."
+        - alert: Lab02NoReadyReplica
+          expr: sum(kube_pod_status_ready{namespace="lab02-kubernetes-llm",condition="true",pod=~".*lab02-vllm.*"}) < 1
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Lab02 has no ready inference replica"
+            description: "Check KServe status, pod events, GPU allocation and startup probe."

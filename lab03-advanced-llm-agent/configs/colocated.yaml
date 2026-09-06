@@ -1,0 +1,23 @@
+schema_version: lab03/v1
+profile: local-r...3050-4gb
+status: executable-baseline-when-lab01-runtime-is-available
+hardware_assumptions:
+  gpu_count: 1
+  gpu_vram_gb: 4
+  model: Qwen/Qwen2.5-0.5B-Instruct
+  max_model_len: 2048
+  gpu_memory_utilization: 0.72
+versions:
+  vllm_image: vllm/vllm-openai:v0.8.3
+  python_client: '>=3.10'
+  note: "Use the Lab 1 image for the measured local baseline; do not mix its numbers with the P/D reference profile."
+server:
+  host: 127.0.0.1
+  port: 8000
+  prefix_caching: false
+  max_num_seqs: 1
+measurement_contract:
+  token_metric: api_usage_or_unavailable
+  required_fields: [request_id, ttft_ms, e2e_ms, completion_tokens, token_metric_status]
+  gpu_metrics: nvidia_smi_or_unavailable
+  claim_policy: "No measured result is valid without raw request records and an environment snapshot."

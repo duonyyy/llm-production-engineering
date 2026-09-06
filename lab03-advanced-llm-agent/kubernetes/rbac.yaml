@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: lab03-observer
+  namespace: lab03
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: lab03-observer
+  namespace: lab03
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "endpoints", "configmaps"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: lab03-observer
+  namespace: lab03
+subjects:
+  - kind: ServiceAccount
+    name: lab03-observer
+    namespace: lab03
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: lab03-observer

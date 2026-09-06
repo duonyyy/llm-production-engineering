@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lab03
+  labels:
+    app.kubernetes.io/part-of: lab03
+    security.lab03/mode: read-only-observer
