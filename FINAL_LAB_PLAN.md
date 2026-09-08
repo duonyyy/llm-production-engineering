@@ -354,6 +354,10 @@ final-lab-production-llm-platform/
 
 Final Lab là artifact mới, không sửa ngược nội dung Lab 1–3.
 
+**Trạng thái scaffold hiện tại:** thư mục `final-lab-production-llm-platform/`
+và các contract/boundary document đã được khởi tạo. Đây là `DESIGN_ONLY`, không
+phải bằng chứng rằng các thành phần đã được tích hợp hoặc chạy runtime.
+
 ## 8. Acceptance criteria
 
 Final Lab chỉ được xem là đạt khi:

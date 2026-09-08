@@ -1,0 +1,38 @@
+schema_version: final-lab/v1
+status: DESIGN_ONLY
+authorization:
+  default: deny
+  side_effects_allowed: false
+tools:
+  get_cluster_summary:
+    side_effect: read-only
+    input:
+      type: object
+      additional_properties: false
+      properties: {}
+  get_model_health:
+    side_effect: read-only
+    input:
+      type: object
+      additional_properties: false
+      properties:
+        component:
+          type: string
+          enum: [inference, router, mcp]
+  get_recent_metrics:
+    side_effect: read-only
+    input:
+      type: object
+      additional_properties: false
+      properties:
+        window_minutes:
+          type: integer
+          minimum: 1
+          maximum: 60
+denied_capabilities:
+  - shell
+  - generic_command_execution
+  - filesystem_write
+  - secrets_read
+  - kubectl_exec
+  - deployment_write

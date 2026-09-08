@@ -1,0 +1,71 @@
+schema_version: final-lab/v1
+status: DESIGN_ONLY
+event:
+  required:
+    - observed_at
+    - execution_mode
+    - model
+    - workload_label
+    - llm_request_id
+    - router_request_id
+  correlation_fields:
+    task_id:
+      nullable: true
+    tool_call_id:
+      nullable: true
+metrics:
+  ttft_ms:
+    unit: ms
+    source: first streamed token timestamp
+    unavailable_value: NA
+  tpot_ms:
+    unit: ms/token
+    source: verified API usage or tokenizer-estimate method
+    unavailable_value: NA
+  e2e_ms:
+    unit: ms
+    source: client request start to terminal response
+  queue_ms:
+    unit: ms
+    source: router or server telemetry
+    unavailable_value: NA
+  prompt_tokens:
+    unit: tokens
+    source: verified API usage or tokenizer-estimate method
+    unavailable_value: NA
+  completion_tokens:
+    unit: tokens
+    source: verified API usage or tokenizer-estimate method
+    unavailable_value: NA
+  gpu_memory_bytes:
+    unit: bytes
+    source: GPU/runtime telemetry
+    unavailable_value: NA
+  gpu_utilization_pct:
+    unit: percent
+    source: GPU/runtime telemetry
+    unavailable_value: NA
+  kv_cache_usage_pct:
+    unit: percent
+    source: version-verified vLLM metric
+    unavailable_value: NA
+  kv_transfer_ms:
+    unit: ms
+    source: P/D transfer telemetry
+    unavailable_value: NA
+  error_count:
+    unit: requests
+    source: terminal request outcome
+aggregation:
+  required_report_fields:
+    - sample_count
+    - completed_count
+    - error_count
+    - warmup_policy
+    - percentile_method
+    - execution_mode
+    - environment_manifest
+claim_policy:
+  no_token_estimate_from: output_chunks
+  no_missing_value_substitution: true
+  required_execution_modes: [STATIC, LOCAL, REFERENCE]

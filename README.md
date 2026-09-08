@@ -22,6 +22,7 @@ Final Lab: one integrated LLM Operations Copilot
 | [Lab 02](lab02-kubernetes-llm/README.md) | Kubernetes, monitoring, RBAC, recovery | manifests plus live-cluster path |
 | [Lab 03](lab03-advanced-llm-agent/README.md) | LMCache, P/D architecture, agent runtime, MCP | local agent/MCP plus two-GPU reference path |
 | [Final Lab plan](FINAL_LAB_PLAN.md) | integrated Production LLM Operations Copilot | design and staged implementation plan |
+| [Final Lab scaffold](final-lab-production-llm-platform/README.md) | source layout, contracts and evidence boundaries | `DESIGN_ONLY` |
 
 ## Current scope and non-claims
 

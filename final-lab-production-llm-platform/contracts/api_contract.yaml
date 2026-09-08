@@ -1,0 +1,81 @@
+schema_version: final-lab/v1
+status: DESIGN_ONLY
+owner: inference-platform
+transport:
+  protocol: HTTP
+  content_type: application/json
+  endpoint: /v1/chat/completions
+request:
+  required:
+    - request_id
+    - model
+    - messages
+    - max_tokens
+    - stream
+    - router_mode
+    - timeout_ms
+    - workload_label
+  fields:
+    request_id:
+      type: string
+      description: Opaque client-provided or gateway-generated request identity.
+    model:
+      type: string
+      description: Exact served model identifier.
+    messages:
+      type: array
+      description: OpenAI-compatible message objects. Raw content is not a log label.
+    max_tokens:
+      type: integer
+      minimum: 1
+    stream:
+      type: boolean
+    router_mode:
+      type: string
+      enum: [colocated, pd]
+    timeout_ms:
+      type: integer
+      minimum: 1
+    workload_label:
+      type: string
+      enum:
+        - short_input_short_output
+        - long_input_short_output
+        - short_input_long_output
+        - long_input_long_output
+        - repeated_prefix
+        - mixed
+headers:
+  request_id: X-Request-ID
+  router_mode: X-Final-Lab-Route
+response:
+  required_headers:
+    - X-Request-ID
+    - X-Final-Lab-Route
+  required_metadata:
+    - llm_request_id
+    - router_request_id
+    - execution_mode
+correlation:
+  task_id:
+    nullable: true
+    rule: Present when the agent initiated the inference request.
+  llm_request_id:
+    nullable: false
+  router_request_id:
+    nullable: false
+  tool_call_id:
+    nullable: true
+    rule: Present only for an agent/MCP tool call.
+privacy:
+  prohibited_log_fields:
+    - raw_messages
+    - authorization_header
+    - api_key
+    - tool_payload
+  allowed_identifiers:
+    - request_id
+    - task_id
+    - llm_request_id
+    - router_request_id
+    - tool_call_id

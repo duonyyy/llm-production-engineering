@@ -1,0 +1,25 @@
+schema_version: final-lab/v1
+status: DESIGN_ONLY
+profile: local-rtx3050-4gb
+execution_mode: LOCAL
+hardware:
+  gpu_count: 1
+  gpu_vram_gb: 4
+model:
+  id: Qwen/Qwen2.5-0.5B-Instruct
+serving:
+  max_model_len: 2048
+  max_num_seqs: 1
+  gpu_memory_utilization: 0.72
+  prefix_caching: false
+  stream_supported: true
+constraints:
+  - This profile is a small-model colocated baseline, not a capacity recommendation.
+  - Increase concurrency or context only after a measured memory and latency check.
+  - P/D and KV transfer are outside this one-GPU profile.
+evidence_required_before_measurement:
+  - environment_manifest
+  - server_command
+  - v1_models_response
+  - metrics_snapshot
+  - raw_request_records

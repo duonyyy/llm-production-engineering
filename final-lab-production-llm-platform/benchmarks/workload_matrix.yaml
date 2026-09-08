@@ -1,0 +1,30 @@
+schema_version: final-lab/v1
+status: DESIGN_ONLY
+comparison_controls:
+  hold_constant:
+    - model
+    - prompt_set_version
+    - max_tokens
+    - sampling_parameters
+    - concurrency
+    - request_count
+    - warmup_policy
+workloads:
+  - id: short_input_short_output
+    intent: baseline_latency
+  - id: long_input_short_output
+    intent: prefill_pressure
+  - id: short_input_long_output
+    intent: decode_pressure
+  - id: long_input_long_output
+    intent: combined_pressure
+  - id: repeated_prefix
+    intent: prefix_cache_reuse
+  - id: mixed
+    intent: representative_mix
+required_outputs:
+  - raw_request_records
+  - environment_manifest
+  - metrics_snapshot
+  - server_log
+  - summary

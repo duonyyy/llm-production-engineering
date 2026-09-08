@@ -44,3 +44,12 @@ This repository is educational and experimental. It is not a production
 service, does not contain a production deployment and does not carry a
 production SLO guarantee. A passing static check or a successful demo request
 does not change that stance.
+
+## Final Lab scaffold status
+
+`final-lab-production-llm-platform/` contains the versioned directory
+structure, contracts, local hardware profile, benchmark/failure matrices and
+report template for the integrated Final Lab. This is `DESIGN_ONLY`: it has no
+integrated runtime, no benchmark output, no Kubernetes deployment and no P/D
+measurement. Runtime claims remain `NOT_RUN` until the required gate and raw
+evidence exist.

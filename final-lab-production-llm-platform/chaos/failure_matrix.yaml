@@ -1,0 +1,22 @@
+schema_version: final-lab/v1
+status: DESIGN_ONLY
+scenarios:
+  - id: inference_worker_down
+    expected: bounded_serving_failure
+  - id: router_timeout
+    expected: timeout_without_synthetic_success
+  - id: mcp_unavailable
+    expected: agent_failed_closed
+  - id: cache_unavailable
+    expected: documented_recompute_or_bounded_failure
+  - id: decode_failure
+    expected: correlated_terminal_error
+  - id: pd_transfer_failure
+    expected: colocated_fallback_or_bounded_failure
+required_record:
+  - scenario_id
+  - command_or_injection_method
+  - execution_mode
+  - correlation_ids
+  - observed_result
+  - cleanup_result
