@@ -12,6 +12,7 @@ These labs demonstrate production-engineering patterns; they are not a hosted pr
 | Prompts and tool payloads | user/agent/tool boundary | minimize retention; sanitize evidence; validate schemas |
 | MCP/tool authority | agent to external action boundary | allowlist tools and arguments; default deny |
 | Model server and router | caller to data-plane boundary | authenticated access in a deployed setup; bounded inputs and timeouts |
+| RAG documents, chunks and index | ingestion/retrieval boundary | source provenance, versioned index and access filter before context exposure |
 | Kubernetes credentials | operator/control-plane boundary | least-privilege RBAC; separate service accounts per role |
 | Logs and benchmark runs | evidence boundary | redact secrets and identifiers; restrict access as needed |
 
@@ -22,6 +23,7 @@ These labs demonstrate production-engineering patterns; they are not a hosted pr
 - Tool identity and user authorization must be verified at the boundary; a model instruction is not authorization.
 - Validate tool input against an explicit schema and enforce resource/time limits.
 - Treat model output as untrusted data, especially when it can select tools, URLs, or deployment operations.
+- Treat retrieved documents as untrusted input: preserve source identity, enforce access scope before context exposure, and abstain when authorized evidence is absent.
 - Separate a user-visible error from internal diagnostics. Error messages must not disclose secrets or infrastructure topology.
 
 ## 4. Agent and MCP policy

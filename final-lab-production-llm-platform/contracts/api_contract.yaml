@@ -15,6 +15,8 @@ request:
     - router_mode
     - timeout_ms
     - workload_label
+  optional:
+    - rag
   fields:
     request_id:
       type: string
@@ -45,6 +47,23 @@ request:
         - long_input_long_output
         - repeated_prefix
         - mixed
+    rag:
+      type: object
+      description: Optional grounded-answer request. Omit for plain inference.
+      required_when_present: [mode, knowledge_base_id]
+      fields:
+        mode:
+          type: string
+          enum: [required]
+        knowledge_base_id:
+          type: string
+        top_k:
+          type: integer
+          minimum: 1
+          maximum: 10
+        metadata_filters:
+          type: object
+          description: Server-enforced authorization and document-scope filters.
 headers:
   request_id: X-Request-ID
   router_mode: X-Final-Lab-Route
@@ -56,6 +75,9 @@ response:
     - llm_request_id
     - router_request_id
     - execution_mode
+  optional_metadata:
+    - retrieval_id
+    - citation_count
 correlation:
   task_id:
     nullable: true
@@ -67,6 +89,9 @@ correlation:
   tool_call_id:
     nullable: true
     rule: Present only for an agent/MCP tool call.
+  retrieval_id:
+    nullable: true
+    rule: Present only when the request uses rag.mode=required.
 privacy:
   prohibited_log_fields:
     - raw_messages
@@ -79,3 +104,4 @@ privacy:
     - llm_request_id
     - router_request_id
     - tool_call_id
+    - retrieval_id

@@ -23,7 +23,7 @@ A green static check proves only the checked contract. It does not prove a GPU r
 | Lab 01 local serving | T0–T2 and a stated hardware profile | T3/T4 smoke with measured latency and errors |
 | Lab 02 routing/cache | T0–T2 with explicit cache and fallback contracts | live T3/T5 routing distribution and cache telemetry |
 | Lab 03 agent/MCP | T0–T2 including an authorization-denial test | real but sandboxed T3 call with correlation IDs |
-| Final Lab | composition contracts for all three labs plus an evidence matrix | T5/T6 end-to-end reference run and failure drill |
+| Final Lab | single-node inference, RAG, observability and agent contracts plus an evidence matrix | local T3 smoke; T5/T6 only for the separate P/D reference path and failure drill |
 
 ## 4. Safe local validation baseline
 

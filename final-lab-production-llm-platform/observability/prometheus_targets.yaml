@@ -1,0 +1,36 @@
+schema_version: final-lab/v1
+status: DESIGN_ONLY
+scrape_targets:
+  - component: nginx
+    endpoint: NOT_CONFIGURED
+    required: false
+  - component: fastapi
+    endpoint: NOT_CONFIGURED
+    required: true
+  - component: rag
+    endpoint: NOT_CONFIGURED
+    required_when_rag_enabled: true
+  - component: agent_mcp
+    endpoint: NOT_CONFIGURED
+    required_when_agent_enabled: true
+  - component: vllm
+    endpoint: NOT_CONFIGURED
+    required: true
+dashboards:
+  - request_latency_and_errors
+  - vllm_gpu_and_kv_cache
+  - rag_retrieval_latency_and_empty_results
+  - agent_tool_denials_and_failures
+metric_label_rules:
+  allowed:
+    - execution_mode
+    - model
+    - workload_label
+    - route
+    - terminal_status
+  prohibited:
+    - prompt
+    - document_content
+    - authorization_header
+    - token
+    - full_request_id

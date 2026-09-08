@@ -13,6 +13,8 @@ metric for a failed operation.
 | Requested P/D path unavailable | availability degradation | fall back to colocated only when that route is healthy; otherwise fail | requested/selected route, fallback reason |
 | Router timeout | serving failure | stop at timeout and return correlated failure | timeout value, route, error class |
 | Cache/LMCache unavailable | performance degradation | recompute only on a documented healthy route | cache state, selected route, latency status |
+| Required RAG index unavailable | grounded-answer failure | return insufficient-evidence failure; do not answer without retrieved sources | retrieval ID, index version, error class |
+| Required RAG yields no authorized evidence | grounded-answer abstention | return insufficient-evidence state; do not invent citations | retrieval ID, knowledge-base version, retrieval count |
 | MCP unavailable or invalid | agent failure | fail closed; no alternative tool or write action | task ID, tool ID, policy/error class |
 | Duplicate tool retry | agent protection | honor idempotency key and do not repeat an action | task ID, idempotency key, disposition |
 | Session state unavailable | agent failure | preserve no unsafe partial state; return failure | task ID, state-store error class |

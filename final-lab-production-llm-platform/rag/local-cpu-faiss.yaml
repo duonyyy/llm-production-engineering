@@ -1,0 +1,32 @@
+schema_version: final-lab/v1
+status: DESIGN_ONLY
+profile: single-node-cpu-rag
+execution_mode: LOCAL
+index:
+  backend: faiss_cpu
+  persistence: local_disk
+  knowledge_base_version: NOT_CREATED
+embedding:
+  device: cpu
+  model: NOT_SELECTED
+  selection_prerequisites:
+    - corpus_language
+    - model_license
+    - evaluation_set
+chunking:
+  status: DESIGN_REQUIRED
+  policy: Select boundaries and token budget from corpus inspection, not a fixed default.
+retrieval:
+  top_k_range: [1, 10]
+  reranker: disabled_until_evaluated
+  authorization_filter: required_before_context_exposure
+generation:
+  rag_mode: required
+  insufficient_evidence_behavior: abstain_with_retrieval_id
+evidence_required_before_measurement:
+  - corpus_manifest
+  - chunk_manifest
+  - embedding_model_version
+  - index_manifest
+  - retrieval_raw_records
+  - labeled_evaluation_set

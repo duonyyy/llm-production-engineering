@@ -1,47 +1,51 @@
-# Final Lab Plan — Production LLM Operations Copilot
+# Final Lab Plan — Single-Node Production LLM + RAG Copilot
 
 ## 1. Mục tiêu tổng thể
 
-Xây dựng một nền tảng LLM production-oriented cho trợ lý vận hành nội bộ
-(Operations Copilot).
+Xây dựng một nền tảng LLM production-style single-node cho trợ lý vận hành nội
+bộ có câu trả lời grounded bằng RAG (Operations Copilot).
 
 Hệ thống phải giải quyết một bài toán xuyên suốt:
 
-> Người dùng hỏi về tình trạng inference service hoặc yêu cầu giải thích một
-> vấn đề hiệu năng; hệ thống trả lời bằng LLM, có thể đọc health/metrics qua
-> MCP read-only, lưu state của phiên làm việc và cung cấp evidence có thể truy
-> vết.
+> Người dùng hỏi về tình trạng inference service, vấn đề hiệu năng hoặc nội
+> dung thuộc knowledge base đã được phê duyệt; hệ thống chỉ trả lời grounded
+> khi có evidence RAG hợp lệ, có thể đọc health/metrics qua MCP read-only, lưu
+> state của phiên làm việc và cung cấp evidence có thể truy vết.
 
 Final Lab không phải là phép cộng cơ học của ba lab. Ba lab phải dùng chung
-request contract, metric contract, error policy và correlation ID.
+request contract, RAG contract, metric contract, error policy và correlation
+ID. Single-node có cấu trúc production-oriented nhưng không chứng minh HA,
+autoscaling hay vận hành cluster.
 
 ## 2. Kiến trúc mục tiêu
 
 ```text
 User
   ↓
-Authenticated Gateway
+Nginx
   ↓
-Agent Runtime
-  ├── Session State
-  ├── Policy / Authorization
-  ├── MCP Client
-  │      ↓
-  │   Read-only MCP Tools
-  │
+FastAPI / Request Orchestrator
+  ├── RAG path (when rag.mode=required)
+  │     └── CPU embedding → local FAISS index → context with citations
+  ├── Agent Runtime (when a read-only observation is needed)
+  │     ├── Session State / Policy / Authorization
+  │     └── MCP Client → allowlisted read-only tools
   └── Inference Router
-         ├── Colocated vLLM Worker
-         └── P/D Reference Path
-                 ↓
-              KV Cache / Transfer
-                 ↓
-              Decode Worker
+        ├── Colocated vLLM Worker → GTX 3050 4 GB
+        └── P/D Reference Path (not runnable locally)
+
+Nginx / FastAPI / RAG / Agent-MCP / vLLM
+  ├── Prometheus → Grafana
+  └── structured logs → local rotated storage or configured log viewer
 ```
 
 Correlation bắt buộc:
 
 ```text
-task_id → llm_request_id → router_request_id → tool_call_id
+task_id
+  ├── retrieval_id (khi dùng RAG)
+  ├── llm_request_id → router_request_id
+  └── tool_call_id (khi gọi MCP)
 ```
 
 ## 3. Vai trò của ba lab con
@@ -49,7 +53,7 @@ task_id → llm_request_id → router_request_id → tool_call_id
 | Lab | Thành phần được tích hợp |
 |---|---|
 | Lab 1 | vLLM serving, OpenAI-compatible API, streaming, TTFT/TPOT/E2E, GPU metrics |
-| Lab 2 | Kubernetes namespace, Service, RBAC, monitoring, autoscaling và failure recovery |
+| Lab 2 | monitoring, health/failure-recovery và resource-boundary lessons; Kubernetes artifacts giữ riêng tại Lab 2 |
 | Lab 3 | Router, LMCache/KV architecture, P/D reference, agent state, MCP và security boundary |
 
 Các lab con vẫn được giữ độc lập để bảo toàn provenance. Final Lab chỉ lấy các
@@ -69,6 +73,10 @@ Mỗi request phải có:
 - `router_mode`;
 - timeout;
 - workload label.
+
+Với grounded request, thêm `rag.mode=required`, `knowledge_base_id`, `top_k`
+và metadata filter do server cưỡng chế. Không có evidence được phép truy xuất
+thì trả về insufficient-evidence, không fallback âm thầm sang LLM thuần.
 
 ### 4.2 Agent contract
 
@@ -105,6 +113,16 @@ Agent:
 - authorization denials;
 - approval events.
 
+RAG:
+
+- embedding latency;
+- retrieval latency;
+- số chunk được truy xuất;
+- context tokens;
+- knowledge-base/index version;
+- citation count;
+- empty/insufficient-evidence rate.
+
 Không có số liệu thật thì ghi `NA`, `NOT_RUN` hoặc `DESIGN_ONLY`; không tự suy
 đoán.
 
@@ -113,7 +131,8 @@ Không có số liệu thật thì ghi `NA`, `NOT_RUN` hoặc `DESIGN_ONLY`; kh�
 ### Giai đoạn 0 — Chốt baseline và environment
 
 1. Ghi model, image, driver, CUDA, Python, Node và hardware.
-2. Chạy preflight của Lab 1 và Lab 2.
+2. Chạy preflight của Lab 1; chỉ tham khảo Lab 2 như nguồn hợp đồng monitoring
+   và failure recovery, không chạy Kubernetes trong Final Lab.
 3. Xác định mode thực thi:
    - `LOCAL_MODE`;
    - `REFERENCE_MODE`.
@@ -143,25 +162,37 @@ Kiểm tra:
 
 **Gate:** local inference chạy được và có raw evidence.
 
-### Giai đoạn 2 — Đóng gói production
+### Giai đoạn 2 — Single-node gateway và observability
 
-Tích hợp các thành phần vào Kubernetes manifests:
+Tích hợp trên một máy:
 
-- namespace;
-- ServiceAccount;
-- Role read-only;
-- Service;
-- NetworkPolicy;
-- readiness/liveness;
-- resource limits;
-- monitoring metadata.
+- Nginx reverse proxy;
+- FastAPI request orchestrator;
+- health/readiness endpoint;
+- Prometheus target contract;
+- Grafana dashboard specification;
+- structured logs có rotation và không chứa prompt/document/token/secret.
 
-Nếu Kubernetes API server không hoạt động, chỉ nghiệm thu static manifest/schema;
-không gọi là live deployment.
+**Gate:** health, metric và log boundary có contract rõ ràng; không gọi là HA,
+autoscaling hay cluster deployment.
 
-**Gate:** manifest hợp lệ, RBAC không có quyền write, Secrets hoặc `pods/exec`.
+### Giai đoạn 3 — Tích hợp RAG local
 
-### Giai đoạn 3 — Tích hợp Agent và MCP
+RAG flow:
+
+```text
+approved documents → provenance/access check → chunk → CPU embedding
+  → FAISS + metadata index → authorized retrieval → cited context → vLLM
+```
+
+GPU được dành cho vLLM; embedding, FAISS và ingestion dùng CPU/RAM mặc định.
+Chưa chọn embedding model hoặc chunk size khi chưa có corpus language, license
+và evaluation set. Reranker chỉ được bật sau so sánh retrieval có evidence.
+
+**Gate:** index/version/ACL contract, insufficient-evidence path và evaluation
+design tồn tại; metric retrieval chưa có raw run thì là `NOT_RUN` hoặc `NA`.
+
+### Giai đoạn 4 — Tích hợp Agent và MCP
 
 Agent flow:
 
@@ -183,12 +214,11 @@ Return answer
 
 Core tools:
 
-- `get_cluster_summary`;
 - `get_model_health`;
 - `get_recent_metrics`.
 
-Không triển khai shell, generic command execution, filesystem write, Secrets
-reader hoặc `kubectl exec`.
+Không triển khai shell, generic command execution, filesystem write hoặc
+Secrets reader.
 
 Kiểm thử:
 
@@ -202,7 +232,7 @@ Kiểm thử:
 **Gate:** agent fail closed, giữ được state và không fallback sang hành động
 nguy hiểm.
 
-### Giai đoạn 4 — Benchmark workload
+### Giai đoạn 5 — Benchmark workload
 
 Giữ cố định giữa các mode:
 
@@ -223,10 +253,14 @@ Workload matrix:
 | Long input / long output | tổng hợp pressure |
 | Repeated prefix | prefix/KV reuse |
 | Mixed workload | workload đại diện hơn |
+| Grounded answer / known source | retrieval + context + generation |
+| Grounded answer / no evidence | correct insufficient-evidence abstention |
 
-Output cần có raw CSV, summary, environment snapshot và log.
+Với RAG giữ cố định knowledge-base/index version, embedding model, `top_k`,
+metadata filter và citation policy. Output cần có raw CSV, summary, environment
+snapshot, RAG manifest và log.
 
-### Giai đoạn 5 — Optimization reference
+### Giai đoạn 6 — Optimization reference
 
 So sánh:
 
@@ -245,7 +279,7 @@ RDMA/NVLink = not assessed
 
 Không dùng single-GPU hoặc localhost TCP để kết luận production P/D topology.
 
-### Giai đoạn 6 — Failure và graceful degradation
+### Giai đoạn 7 — Failure và graceful degradation
 
 Kiểm thử:
 
@@ -255,6 +289,8 @@ Kiểm thử:
 - LMCache unavailable;
 - decode failure;
 - transfer failure.
+- RAG index unavailable;
+- RAG không có authorized evidence.
 
 Fallback hợp lệ:
 
@@ -262,6 +298,7 @@ Fallback hợp lệ:
 P/D unavailable → colocated inference
 MCP unavailable → trả lời với trạng thái thiếu evidence
 Cache unavailable → recompute
+RAG required nhưng index/evidence unavailable → insufficient-evidence, không bịa citation
 ```
 
 Phải phân biệt:
@@ -271,7 +308,7 @@ Phải phân biệt:
 
 Không retry mù đối với action có side effect.
 
-### Giai đoạn 7 — Báo cáo và production gate
+### Giai đoạn 8 — Báo cáo và production gate
 
 Báo cáo phải tách:
 
@@ -290,9 +327,10 @@ Các gate cần đánh giá:
 | SLO | TTFT, TPOT, E2E, error rate có đạt mục tiêu không? |
 | P/D | transfer overhead và failure path đã đo chưa? |
 | Cache | hit ratio, eviction và compatibility đã biết chưa? |
+| RAG | retrieval, evidence, citation và abstention có được đo riêng không? |
 | Security | AuthN, AuthZ, least privilege và secret boundary đã rõ chưa? |
 | Agent | state, retry, idempotency, audit và approval đã có chưa? |
-| Cost | GPU-hours, CPU RAM, network và external KV cost là bao nhiêu? |
+| Cost | GPU-hours, CPU RAM, disk và local observability cost là bao nhiêu? |
 
 Gate chưa có evidence phải ghi `NOT ASSESSED`, không ghi `PASS`.
 
@@ -308,14 +346,16 @@ Gate chưa có evidence phải ghi `NOT ASSESSED`, không ghi `PASS`.
 - agent runtime;
 - MCP read-only;
 - SQLite state;
-- static Kubernetes validation.
+- CPU embedding và FAISS local index;
+- Nginx/FastAPI boundary;
+- Prometheus/logging contract.
 
 Không được kết luận:
 
 - P/D performance;
 - NIXL/RDMA/NVLink performance;
 - hai-GPU capacity;
-- production autoscaling thật.
+- HA, cluster deployment hoặc production autoscaling thật.
 
 ### 6.2 REFERENCE_MODE — môi trường Linux + 2 GPU
 
@@ -342,9 +382,10 @@ final-lab-production-llm-platform/
 │   └── error_policy.md
 ├── inference/
 ├── router/
+├── rag/
 ├── agent/
 ├── mcp-server/
-├── kubernetes/
+├── observability/
 ├── benchmarks/
 ├── chaos/
 ├── datasets/
@@ -366,8 +407,10 @@ Final Lab chỉ được xem là đạt khi:
 - agent gọi được MCP read-only;
 - session state khôi phục được sau restart;
 - request có correlation ID đầy đủ;
-- Kubernetes manifests parse được;
-- RBAC không cấp write, Secrets hoặc `pods/exec`;
+- RAG grounded request có citation từ index version hợp lệ hoặc trả về
+  insufficient-evidence;
+- RAG không đưa document/chunk trái access scope vào context;
+- Prometheus/logging boundary không chứa raw prompt, document, token hoặc secret;
 - benchmark có raw data;
 - lỗi backend không tạo số liệu giả;
 - P/D được đánh dấu `NOT_RUN` khi thiếu hai GPU;
@@ -378,15 +421,14 @@ Final Lab chỉ được xem là đạt khi:
 Để tránh scope creep, chưa đưa vào:
 
 - VLM;
-- RAG;
 - multi-agent;
 - fine-tuning;
-- KServe CRD;
+- Kubernetes/KServe;
 - production database;
 - write tool;
 - multi-node deployment;
 - RDMA/NVLink claim;
-- autoscaling thật nếu cluster chưa có GPU Operator.
+- autoscaling thật.
 
 ## 10. Kết luận thiết kế
 
@@ -394,6 +436,7 @@ Final Lab phải chứng minh một chuỗi có thể kiểm chứng:
 
 ```text
 Inference
+  → RAG Evidence
   → Observability
   → Routing
   → Agent State

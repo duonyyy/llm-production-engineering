@@ -13,6 +13,8 @@ event:
       nullable: true
     tool_call_id:
       nullable: true
+    retrieval_id:
+      nullable: true
 metrics:
   ttft_ms:
     unit: ms
@@ -56,6 +58,26 @@ metrics:
   error_count:
     unit: requests
     source: terminal request outcome
+  embedding_ms:
+    unit: ms
+    source: RAG embedding timestamp
+    unavailable_value: NA
+  retrieval_ms:
+    unit: ms
+    source: RAG index-query timestamp
+    unavailable_value: NA
+  retrieved_chunk_count:
+    unit: chunks
+    source: RAG retrieval result
+    unavailable_value: NA
+  context_tokens:
+    unit: tokens
+    source: context-builder tokenizer method
+    unavailable_value: NA
+  citation_count:
+    unit: citations
+    source: final grounded response
+    unavailable_value: NA
 aggregation:
   required_report_fields:
     - sample_count
@@ -65,6 +87,7 @@ aggregation:
     - percentile_method
     - execution_mode
     - environment_manifest
+    - knowledge_base_version_when_rag_enabled
 claim_policy:
   no_token_estimate_from: output_chunks
   no_missing_value_substitution: true

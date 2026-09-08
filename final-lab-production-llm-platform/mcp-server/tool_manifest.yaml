@@ -4,12 +4,6 @@ authorization:
   default: deny
   side_effects_allowed: false
 tools:
-  get_cluster_summary:
-    side_effect: read-only
-    input:
-      type: object
-      additional_properties: false
-      properties: {}
   get_model_health:
     side_effect: read-only
     input:

@@ -6,15 +6,16 @@ The roadmap orders learning and validation work. It is not a promise of producti
 |---|---|---|---|
 | 1. Local foundation | Reliable small-model serving path on the GTX 3050 4 GB profile | Lab 01 configuration and dependencies understood | bounded local smoke or an explicit unrun gate |
 | 2. Routing contract | Cache/routing decisions and fallbacks are inspectable | local serving contract exists | static/unit checks and, if available, live routing telemetry |
-| 3. Agent boundary | Tool access is capability-scoped and observable | routing/inference request IDs are defined | success and denial paths tested with sanitized logs |
-| 4. Final Lab composition | One end-to-end problem joins serving, routing/cache, and agent policy | Labs 01–03 interfaces documented | integrated evidence matrix and rollback/failure semantics |
-| 5. Reference topology | Cluster/P-D assumptions are exercised in their proper environment | access to the required hardware/cluster | deployment revision, telemetry, benchmark protocol, and failure drill |
+| 3. RAG boundary | CPU retrieval adds authorized, versioned evidence before vLLM generation | corpus and access-scope contract are defined | retrieval/abstention paths and sanitized evidence matrix |
+| 4. Agent boundary | Tool access is capability-scoped and observable | routing/inference and retrieval IDs are defined | success and denial paths tested with sanitized logs |
+| 5. Final Lab composition | One single-node problem joins serving, RAG, observability and agent policy | interfaces and failure contracts are documented | integrated evidence matrix and rollback/failure semantics |
+| 6. Reference topology | P/D assumptions are exercised only in their proper multi-GPU environment | access to the required hardware | telemetry, benchmark protocol, and failure drill |
 
 ## Next practical work
 
 - Keep each lab README aligned with its current runnable state and prerequisites.
 - Add sanitized `runs/` evidence only after an actual command executes.
 - Define the Final Lab’s end-to-end workload, acceptance matrix, and failure injection cases before measuring it.
-- Use a separate reference environment for multi-GPU, Kubernetes, or prefill/decode claims.
+- Use a separate reference environment for multi-GPU or prefill/decode claims; Kubernetes remains isolated in Lab 02, outside the Final Lab.
 
 The Final Lab plan is in [FINAL_LAB_PLAN.md](FINAL_LAB_PLAN.md). Current, intentionally conservative claim status is in [docs/PROJECT_STATUS.md](docs/PROJECT_STATUS.md).

@@ -31,6 +31,8 @@
 | throughput | `NA` | | |
 | error rate | `NA` | | |
 | GPU/KV metrics | `NA` | | |
+| RAG embedding/retrieval latency | `NA` | | |
+| RAG evidence/citation coverage | `NA` | | |
 
 ## 4. Failure and fallback evidence
 
@@ -54,6 +56,7 @@ state and whether the result was availability or performance degradation.
 | Local serving | `NOT_RUN` | | |
 | Router/fallback | `NOT_RUN` | | |
 | Agent/MCP policy | `NOT_RUN` | | |
-| Kubernetes reference | `NOT_RUN` | | |
+| RAG grounded-answer path | `NOT_RUN` | | |
+| Prometheus/logging path | `NOT_RUN` | | |
 | P/D reference | `NOT_RUN` | | |
 | Failure drills | `NOT_RUN` | | |

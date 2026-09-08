@@ -19,10 +19,14 @@ Never present `STATIC` or `REFERENCE` results as measurements from the local GPU
 Propagate a request identity through every component that participates in a task:
 
 ```text
-task_id -> llm_request_id -> router_request_id -> tool_call_id
+task_id
+  ├-> retrieval_id (when RAG is used)
+  ├-> llm_request_id -> router_request_id
+  └-> tool_call_id (when an MCP tool is used)
 ```
 
 - `task_id`: one user-visible agent task.
+- `retrieval_id`: one RAG retrieval operation for an authorized index version.
 - `llm_request_id`: one model inference call.
 - `router_request_id`: one routing decision or proxy hop.
 - `tool_call_id`: one bounded MCP/tool operation.
@@ -35,6 +39,7 @@ Use opaque IDs. Do not put raw prompts, access tokens, authorization headers, or
 |---|---|---|---|
 | Inference | model, mode, request ID, start/end, input/output token counts when available, error class | end-to-end latency, TTFT, inter-token latency, throughput, error rate | GPU utilization or KV-cache usage without a runtime metric |
 | Router/cache | router ID, backend selected, cache decision, hit/miss reason | cache hit rate, routing distribution, transfer time when emitted | a cache hit merely from prompt similarity |
+| RAG | retrieval ID, index/model/chunk version, authorized result count, error class | embedding/retrieval latency, empty-result rate, citation count | retrieval quality or access control from a non-empty result alone |
 | Agent | task ID, policy decision, allowed tool name, tool-call result | task success rate, tool-call latency, deny/error rate | tool success when the model text says it succeeded |
 | Kubernetes/reference | pod/container identity, replica, resource request/limit, rollout revision | replica health, queueing, restart/error count | local-GPU performance |
 
@@ -46,6 +51,7 @@ Use opaque IDs. Do not put raw prompts, access tokens, authorization headers, or
 |---|---|---|
 | Model backend unavailable | request ID, selected backend, error class | return a clear failure; do not silently claim completion |
 | Cache/routing unavailable | request ID, routing state, fallback used | use the documented fallback or reject the request |
+| Required RAG evidence unavailable | retrieval ID, index version, authorized result count | return insufficient-evidence; do not silently answer as plain LLM |
 | Tool policy denial | task ID, requested tool, policy reason | preserve the denial; never retry with broader privilege |
 | Partial tool failure | task ID, tool ID, side-effect status | report partial completion and avoid duplicate writes |
 | Benchmark interruption | run ID, completed samples, reason | mark run incomplete; do not aggregate it as a full run |

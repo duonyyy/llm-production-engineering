@@ -5,19 +5,20 @@
 This directory is the **project scaffold** for the integrated Final Lab. Its
 current delivery status is `DESIGN_ONLY`: contracts, boundaries and evidence
 locations are versioned, but no component is wired together and no runtime,
-GPU, Kubernetes, P/D or benchmark claim is made here.
+GPU, RAG, P/D or benchmark claim is made here.
 
-The scope is efficient, observable and safe LLM inference deployment. RAG,
-vector databases, embedding pipelines and retrieval evaluation are explicitly
-out of scope.
+The scope is a single-node, production-style LLM platform: Nginx, FastAPI,
+RAG, an optional bounded Agent/MCP path, vLLM on the local GPU, and an
+observability contract. It is not a high-availability deployment.
 
 ## Problem statement
 
-An authenticated internal operator needs to submit an LLM inference request or
-inspect its health and performance. The platform must route the request through
-the documented inference path, preserve correlation IDs, expose only
-allowlisted read-only operational tools, and make degradation visible rather
-than fabricate success or metrics.
+An authenticated internal operator needs to submit an LLM inference request,
+ask a grounded question over an approved local knowledge base, or inspect its
+health and performance. The platform must route the request through the
+documented inference path, preserve correlation IDs, expose only allowlisted
+read-only operational tools, and make degradation visible rather than
+fabricate success, citations, or metrics.
 
 ## Start here
 
@@ -39,9 +40,10 @@ than fabricate success or metrics.
 | `contracts/` | API, metrics and failure contracts | versioned design |
 | `inference/` | model-server profiles and serving boundary | local profile only |
 | `router/` | route selection and fallback contract | design only |
+| `rag/` | local ingestion, retrieval and context boundary | CPU-index design |
 | `agent/` | bounded operator workflow and session boundary | design only |
 | `mcp-server/` | read-only tool manifest | versioned design |
-| `kubernetes/` | reference deployment composition | design only |
+| `observability/` | Prometheus, Grafana and structured-log contract | versioned design |
 | `benchmarks/` | comparable workload definitions | versioned design |
 | `chaos/` | failure-injection matrix | versioned design |
 | `datasets/` | non-sensitive workload-data rules | empty by design |
@@ -52,12 +54,12 @@ than fabricate success or metrics.
 
 | Path | Allowed claim |
 |---|---|
-| `LOCAL_MODE` | small-model colocated serving, client benchmark logic, agent state, read-only MCP, static manifests |
-| `REFERENCE_MODE` | Linux/Kubernetes/multi-GPU experiments, P/D, KV transfer and failure drills when the stated environment exists |
+| `LOCAL_MODE` | small-model colocated serving, CPU RAG, agent state, read-only MCP, Prometheus/logging integration |
+| `REFERENCE_MODE` | multi-GPU P/D, KV transfer and failure drills when the stated environment exists |
 
-P/D, LMCache transfer, RDMA/NVLink and live Kubernetes autoscaling remain
-`NOT_RUN` until their reference-environment raw evidence exists. See the root
-[Final Lab plan](../FINAL_LAB_PLAN.md) and [project status](../docs/PROJECT_STATUS.md).
+P/D, LMCache transfer and RDMA/NVLink remain `NOT_RUN` until their
+reference-environment raw evidence exists. See the root [Final Lab
+plan](../FINAL_LAB_PLAN.md) and [project status](../docs/PROJECT_STATUS.md).
 
 ## Composition rule
 
@@ -68,13 +70,17 @@ order is:
 ```text
 Lab 01 serving contract
   -> Lab 03 router contract
+  -> RAG context contract
   -> Lab 03 agent/MCP policy
-  -> Lab 02 reference deployment contract
+  -> local observability contract
   -> benchmark + failure evidence
 ```
 
-Every request uses the correlation chain:
+Every task uses a traceable correlation graph:
 
 ```text
-task_id -> llm_request_id -> router_request_id -> tool_call_id
+task_id
+  ├-> retrieval_id (when RAG is requested)
+  ├-> llm_request_id -> router_request_id
+  └-> tool_call_id (when an MCP tool is requested)
 ```
