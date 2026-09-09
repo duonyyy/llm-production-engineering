@@ -1,5 +1,9 @@
 # Lab 02 — Environment and execution boundary
 
+> **Advanced Track (optional):** không cần chạy Lab 02 để hoàn thành Core
+> single-node path. Manifest-only trên laptop là `STATIC`, không phải cluster
+> deployment; xem [Advanced Track](../ADVANCED_TRACK.md).
+
 ## Hardware profile supplied by the user
 
 - GPU: NVIDIA GeForce RTX 3050 Laptop GPU, **4GB VRAM**.

@@ -37,7 +37,7 @@ FastAPI / Request Orchestrator
   │     └── MCP Client → allowlisted read-only tools
   └── Inference Router
         ├── Colocated vLLM Worker → GTX 3050 4 GB
-        └── P/D Reference Path (not runnable locally)
+        └── P/D Reference Path (Advanced Track only; not runnable locally)
 
 Nginx / FastAPI / RAG / Agent-MCP / vLLM
   ├── Prometheus → Grafana
@@ -59,7 +59,7 @@ task_id
 |---|---|
 | Lab 1 | vLLM serving, OpenAI-compatible API, streaming, TTFT/TPOT/E2E, GPU metrics |
 | Lab 2 | monitoring, health/failure-recovery và resource-boundary lessons; Kubernetes artifacts giữ riêng tại Lab 2 |
-| Lab 3 | Router, LMCache/KV architecture, P/D reference, agent state, MCP và security boundary |
+| Lab 3 | Core agent/MCP contract; Advanced P/D, LMCache/KV reference và distributed failure boundary |
 
 Các lab con vẫn được giữ độc lập để bảo toàn provenance. Final Lab chỉ lấy các
 thành phần cần thiết và tích hợp qua contract chung.
@@ -140,7 +140,7 @@ Không có số liệu thật thì ghi `NA`, `NOT_RUN` hoặc `DESIGN_ONLY`; kh�
    và failure recovery, không chạy Kubernetes trong Final Lab.
 3. Xác định mode thực thi:
    - `LOCAL_MODE`;
-   - `REFERENCE_MODE`.
+   - `REFERENCE_MODE` chỉ cho Advanced Track.
 4. Tạo version manifest và run manifest.
 
 **Gate:** mọi kết quả sau này đều biết rõ chạy trên phần cứng và version nào.
@@ -265,7 +265,7 @@ Với RAG giữ cố định knowledge-base/index version, embedding model, `top
 metadata filter và citation policy. Output cần có raw CSV, summary, environment
 snapshot, RAG manifest và log.
 
-### Giai đoạn 6 — Optimization reference
+### Giai đoạn 6 — Advanced Track (optional): Optimization reference
 
 So sánh:
 
@@ -274,7 +274,8 @@ Mode A: Colocated
 Mode B: P/D + KV transfer
 ```
 
-P/D thật chỉ được chạy khi có Linux và hai GPU tương thích. Với máy hiện tại:
+P/D thật chỉ được chạy khi có Linux và hai GPU tương thích. Đây là Advanced
+Track, không phải core Final Lab gate. Với máy hiện tại:
 
 ```text
 P/D = architecture/reference only
@@ -293,14 +294,14 @@ Kiểm thử:
 - MCP unavailable;
 - LMCache unavailable;
 - decode failure;
-- transfer failure.
+- Advanced P/D transfer failure.
 - RAG index unavailable;
 - RAG không có authorized evidence.
 
 Fallback hợp lệ:
 
 ```text
-P/D unavailable → colocated inference
+Advanced P/D unavailable → colocated inference
 MCP unavailable → trả lời với trạng thái thiếu evidence
 Cache unavailable → recompute
 RAG required nhưng index/evidence unavailable → insufficient-evidence, không bịa citation
@@ -330,7 +331,7 @@ Các gate cần đánh giá:
 |---|---|
 | Capacity | saturation point và long-context capacity là bao nhiêu? |
 | SLO | TTFT, TPOT, E2E, error rate có đạt mục tiêu không? |
-| P/D | transfer overhead và failure path đã đo chưa? |
+| Advanced P/D | transfer overhead và failure path đã đo chưa? Không chặn core completion. |
 | Cache | hit ratio, eviction và compatibility đã biết chưa? |
 | RAG | retrieval, evidence, citation và abstention có được đo riêng không? |
 | Security | AuthN, AuthZ, least privilege và secret boundary đã rõ chưa? |
@@ -362,9 +363,10 @@ Không được kết luận:
 - hai-GPU capacity;
 - HA, cluster deployment hoặc production autoscaling thật.
 
-### 6.2 REFERENCE_MODE — môi trường Linux + 2 GPU
+### 6.2 ADVANCED_REFERENCE_MODE — môi trường Linux + 2 GPU
 
-Cho phép kiểm tra thêm:
+Chỉ dành cho Advanced Track; không phải prerequisite của Final Lab core. Cho
+phép kiểm tra thêm:
 
 - prefill process;
 - decode process;
@@ -418,7 +420,7 @@ Final Lab chỉ được xem là đạt khi:
 - Prometheus/logging boundary không chứa raw prompt, document, token hoặc secret;
 - benchmark có raw data;
 - lỗi backend không tạo số liệu giả;
-- P/D được đánh dấu `NOT_RUN` khi thiếu hai GPU;
+- Advanced P/D được đánh dấu `NOT_RUN` khi thiếu hai GPU và không chặn core completion;
 - report phân biệt fact, inference và limitation.
 
 ## 9. Phạm vi không làm trong Final Lab

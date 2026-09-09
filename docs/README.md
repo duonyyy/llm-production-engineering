@@ -18,6 +18,7 @@ shared contracts that make the labs comparable.
 | make an agent-led change | [Agent instructions](../AGENTS.md), then [Contributing](../CONTRIBUTING.md) |
 | implement the Final Lab | [Final Lab scaffold](../final-lab-production-llm-platform/README.md) |
 | design the Final Lab | [Canonical architecture](../final-lab-production-llm-platform/ARCHITECTURE.md) |
+| study distributed systems | [Advanced Track](../ADVANCED_TRACK.md) |
 
 ## Documentation contract
 

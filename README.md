@@ -19,10 +19,14 @@ Final Lab: one integrated single-node LLM + RAG Operations Copilot
 | Module | Focus | Current execution boundary |
 | --- | --- | --- |
 | [Lab 01](lab01-vllm-inference/README.md) | vLLM, streaming, KV cache, benchmark methodology | local colocated profile |
-| [Lab 02](lab02-kubernetes-llm/README.md) | Kubernetes, monitoring, RBAC, recovery | manifests plus live-cluster path |
-| [Lab 03](lab03-advanced-llm-agent/README.md) | LMCache, P/D architecture, agent runtime, MCP | local agent/MCP plus two-GPU reference path |
-| [Final Lab plan](FINAL_LAB_PLAN.md) | integrated single-node LLM + RAG Operations Copilot | design and staged implementation plan |
+| [Lab 02](lab02-kubernetes-llm/README.md) | **Advanced:** Kubernetes, monitoring, RBAC, recovery | manifest study plus live-cluster path |
+| [Lab 03](lab03-advanced-llm-agent/README.md) | agent runtime/MCP; **Advanced:** LMCache and P/D | local agent/MCP plus two-GPU reference path |
+| [Final Lab plan](FINAL_LAB_PLAN.md) | **Core:** single-node LLM + RAG Operations Copilot | design and staged implementation plan |
 | [Final Lab scaffold](final-lab-production-llm-platform/README.md) | source layout, contracts and evidence boundaries | `DESIGN_ONLY` |
+
+## Learning tracks
+
+Start with the [Core single-node path](ADVANCED_TRACK.md#core-path-cho-người-học-cá-nhân): Lab 01, the Final Lab, and Lab 03's local agent/MCP boundary. Kubernetes and multi-GPU P/D are optional [Advanced Track](ADVANCED_TRACK.md) work and do not block core completion.
 
 ## Current scope and non-claims
 

@@ -4,7 +4,9 @@
 
 Final Lab là hệ thống **single-node, production-style**: có boundary,
 contract, observability và failure handling rõ ràng, nhưng không tuyên bố
-high availability, autoscaling, multi-node capacity hay P/D performance.
+high availability, autoscaling, multi-node capacity hay P/D performance. P/D
+multi-GPU belongs to the optional [Advanced Track](../ADVANCED_TRACK.md), not
+the core Final Lab runtime.
 
 Ba loại yêu cầu không được lẫn với nhau:
 
@@ -63,7 +65,7 @@ Prometheus, không thay thế log storage hoặc audit events.
 | Nginx | reverse proxy; TLS/rate-limit policy khi được cấu hình | quyết định quyền tài liệu/tool |
 | FastAPI | authentication, contract validation, correlation, chọn path | bypass policy hoặc log raw sensitive data |
 | RAG | access scope, CPU embedding, retrieval, cited context | trả lời grounded khi thiếu authorized evidence |
-| Router | request ID, route, timeout/fallback policy | gọi fallback là P/D success |
+| Router | colocated request ID, route và timeout policy | kích hoạt hoặc gọi Advanced P/D là core success |
 | vLLM | generation và runtime metrics | dùng GPU cho embedding/index mặc định |
 | Agent | durable state, one bounded decision, audit/idempotency | tự cấp quyền hoặc thực thi action nguy hiểm |
 | MCP | schema-validated read-only observations | shell, secret read, filesystem/deployment write |

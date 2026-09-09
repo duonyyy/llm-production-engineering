@@ -53,7 +53,8 @@ metrics:
     unavailable_value: NA
   kv_transfer_ms:
     unit: ms
-    source: P/D transfer telemetry
+    source: Advanced Track P/D transfer telemetry
+    core_required: false
     unavailable_value: NA
   error_count:
     unit: requests

@@ -38,6 +38,9 @@ Use this mode only on Linux with the required Docker, NVIDIA runtime, live
 Kubernetes environment and, for P/D, two compatible GPUs. Version-sensitive
 connectors and transports must be revalidated immediately before execution.
 
+This is the optional **Advanced Track**. Its `REFERENCE` evidence never blocks
+the Core single-node path when the required environment is unavailable.
+
 ## Current release stance
 
 This repository is educational and experimental. It is not a production
@@ -53,3 +56,5 @@ benchmark/failure matrices and report template for the integrated Final Lab.
 This is `DESIGN_ONLY`: it has no integrated runtime, knowledge-base/index,
 benchmark output, Prometheus/Grafana stack or P/D measurement. Runtime claims
 remain `NOT_RUN` until the required gate and raw evidence exist.
+
+Advanced P/D evidence is optional and does not block core Final Lab completion.

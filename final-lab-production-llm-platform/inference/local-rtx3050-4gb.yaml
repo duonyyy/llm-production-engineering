@@ -16,7 +16,7 @@ serving:
 constraints:
   - This profile is a small-model colocated baseline, not a capacity recommendation.
   - Increase concurrency or context only after a measured memory and latency check.
-  - P/D and KV transfer are outside this one-GPU profile.
+  - P/D and KV transfer are optional Advanced Track work outside this one-GPU profile.
 evidence_required_before_measurement:
   - environment_manifest
   - server_command

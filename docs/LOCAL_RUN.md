@@ -9,8 +9,8 @@ hardware or Linux gate just to obtain a result.
 Read the lab-specific environment contracts first:
 
 - [Lab 01 environment](../lab01-vllm-inference/ENVIRONMENT.md)
-- [Lab 02 environment](../lab02-kubernetes-llm/ENVIRONMENT.md)
-- [Lab 03 hardware scope](../lab03-advanced-llm-agent/README.md)
+- [Lab 02 environment — Advanced Track](../lab02-kubernetes-llm/ENVIRONMENT.md)
+- [Lab 03 hardware scope — P/D is Advanced Track](../lab03-advanced-llm-agent/README.md)
 
 ## Static validation path
 
@@ -22,6 +22,9 @@ python -c "import ast, pathlib; [ast.parse(p.read_text(encoding='utf-8')) for p 
 python lab03-advanced-llm-agent/benchmark/benchmark_pd.py --mode design
 python lab03-advanced-llm-agent/agent/agent_runtime.py --task "check model health" --mock-mcp
 ```
+
+`benchmark_pd.py --mode design` is an Advanced Track static design check; it is
+not a core runtime gate.
 
 Generated runtime files belong under a results directory and must not be
 committed as measured evidence unless their full run metadata is present.
@@ -40,14 +43,14 @@ The exact command is version and hardware sensitive. Preserve the server
 configuration, model revision, `/v1/models` response, metrics snapshots and
 raw benchmark rows before judging performance.
 
-## Kubernetes path
+## Advanced Track: Kubernetes path (optional)
 
 Lab 02 uses a real Kubernetes API only when `kubectl get nodes` succeeds.
 Until then, YAML/schema checks are valuable but must be labelled
 `STATIC_VALIDATED`. Do not run destructive cleanup or install scripts against a
 cluster you have not identified.
 
-## P/D and LMCache path
+## Advanced Track: P/D and LMCache path (optional)
 
 The Lab 03 P/D scripts require a Linux environment and at least two compatible
 NVIDIA GPUs. The local RTX 3050 profile must stop before those commands and

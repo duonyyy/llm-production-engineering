@@ -58,5 +58,5 @@ state and whether the result was availability or performance degradation.
 | Agent/MCP policy | `NOT_RUN` | | |
 | RAG grounded-answer path | `NOT_RUN` | | |
 | Prometheus/logging path | `NOT_RUN` | | |
-| P/D reference | `NOT_RUN` | | |
+| Advanced P/D reference (optional) | `NOT_RUN` | | |
 | Failure drills | `NOT_RUN` | | |

@@ -13,7 +13,7 @@ A green static check proves only the checked contract. It does not prove a GPU r
 | T2 — unit/mock | pure logic, policy denial, retry/fallback paths | deterministic tests with mocks | local |
 | T3 — CLI/service smoke | a real local component accepts a bounded request | captured request/result and logs | hardware/dependency dependent |
 | T4 — GPU runtime | model server loads and generates on the GTX 3050 4 GB profile | command, environment, metrics, errors | local GPU dependent |
-| T5 — reference topology | Kubernetes, multi-GPU, or P/D workflow behaves end-to-end | deployment revision and telemetry | reference environment only |
+| T5 — advanced reference topology | Kubernetes, multi-GPU, or P/D workflow behaves end-to-end | deployment revision and telemetry | optional advanced environment only |
 | T6 — failure drill | declared failures reject or recover as designed | injected failure and observable result | environment dependent |
 
 ## 3. Minimum acceptance by lab
@@ -21,9 +21,9 @@ A green static check proves only the checked contract. It does not prove a GPU r
 | Area | Minimum before calling it complete | Stronger evidence |
 |---|---|---|
 | Lab 01 local serving | T0–T2 and a stated hardware profile | T3/T4 smoke with measured latency and errors |
-| Lab 02 routing/cache | T0–T2 with explicit cache and fallback contracts | live T3/T5 routing distribution and cache telemetry |
+| Lab 02 routing/cache (Advanced) | T0–T2 with explicit cache and fallback contracts | live T3/T5 routing distribution and cache telemetry |
 | Lab 03 agent/MCP | T0–T2 including an authorization-denial test | real but sandboxed T3 call with correlation IDs |
-| Final Lab | single-node inference, RAG, observability and agent contracts plus an evidence matrix | local T3 smoke; T5/T6 only for the separate P/D reference path and failure drill |
+| Final Lab | single-node inference, RAG, observability and agent contracts plus an evidence matrix | local T3 smoke; P/D T5/T6 is Advanced Track only and does not block core completion |
 
 ## 4. Safe local validation baseline
 

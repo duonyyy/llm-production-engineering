@@ -35,6 +35,8 @@ request:
     router_mode:
       type: string
       enum: [colocated, pd]
+      advanced_only_values: [pd]
+      description: Core accepts colocated; pd requires the optional Advanced Track environment.
     timeout_ms:
       type: integer
       minimum: 1

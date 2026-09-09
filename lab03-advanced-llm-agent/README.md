@@ -1,5 +1,10 @@
 # LAB 03 — Advanced LLM Production: LMCache, P/D Disaggregation và Agent Runtime/MCP
 
+> **Track split:** Agent/MCP read-only, SQLite state và colocated router contract
+> là Core-compatible. P/D, LMCache/NIXL, multi-GPU benchmark/failure drill và
+> Kubernetes reference là Advanced Track optional; xem
+> [Advanced Track](../ADVANCED_TRACK.md).
+
 Lab này nối ba lớp hệ thống:
 
 ```mermaid

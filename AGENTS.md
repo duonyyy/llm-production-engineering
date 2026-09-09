@@ -38,8 +38,8 @@ For a measured claim, retain the command, timestamp, model/version, configuratio
 | Lab | Primary concern | Do not assume |
 |---|---|---|
 | Lab 01 | local vLLM inference and benchmark provenance | that static config proves a Docker/GPU runtime |
-| Lab 02 | Kubernetes/routing/cache topology | that a laptop validates a distributed deployment |
-| Lab 03 | agent/MCP workflow and P/D reference concepts | that model output grants a tool authority |
+| Lab 02 | **Advanced:** Kubernetes/routing/cache topology | that a laptop validates a distributed deployment |
+| Lab 03 | agent/MCP core workflow; **Advanced:** P/D reference concepts | that model output grants a tool authority |
 | Final Lab | single-node inference, RAG, observability and agent contracts | that the scaffold or a local demo is an end-to-end benchmark |
 
 Keep lab-specific changes inside their lab unless an interface shared by multiple labs actually changes. If a cross-lab contract changes, update the relevant shared document and [FINAL_LAB_PLAN.md](FINAL_LAB_PLAN.md).

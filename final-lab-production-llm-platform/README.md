@@ -57,11 +57,12 @@ fabricate success, citations, or metrics.
 | Path | Allowed claim |
 |---|---|
 | `LOCAL_MODE` | small-model colocated serving, CPU RAG, agent state, read-only MCP, Prometheus/logging integration |
-| `REFERENCE_MODE` | multi-GPU P/D, KV transfer and failure drills when the stated environment exists |
+| `REFERENCE_MODE` | **Advanced Track only:** multi-GPU P/D, KV transfer and failure drills when the stated environment exists |
 
-P/D, LMCache transfer and RDMA/NVLink remain `NOT_RUN` until their
-reference-environment raw evidence exists. See the root [Final Lab
-plan](../FINAL_LAB_PLAN.md) and [project status](../docs/PROJECT_STATUS.md).
+P/D, LMCache transfer and RDMA/NVLink are Advanced Track work, never a core
+completion condition. They remain `NOT_RUN` until reference-environment raw
+evidence exists. See the root [Advanced Track](../ADVANCED_TRACK.md), [Final
+Lab plan](../FINAL_LAB_PLAN.md), and [project status](../docs/PROJECT_STATUS.md).
 
 ## Composition rule
 

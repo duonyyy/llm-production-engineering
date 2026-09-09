@@ -1,6 +1,10 @@
 # Lab 02 — Kubernetes, GPU, KServe, Autoscaling và Observability
 
-Lab này đưa workload vLLM của Lab 1 vào Kubernetes theo hướng có thể kiểm tra được. Profile mặc định đã hạ theo máy hiện tại: **RTX 3050 Laptop 4GB**, `Qwen/Qwen2.5-0.5B-Instruct`, một GPU cho một replica, context 4096, GPU memory target 0.80.
+> **Advanced Track (optional).** Lab này không phải prerequisite cho Core
+> single-node path hoặc Final Lab. Giữ nguyên artifact để học distributed LLM
+> systems khi đã có cluster phù hợp; xem [Advanced Track](../ADVANCED_TRACK.md).
+
+Lab này đưa workload vLLM của Lab 1 vào Kubernetes theo hướng có thể kiểm tra được. Profile mặc định đã hạ theo máy hiện tại: **RTX 3050 Laptop 4GB**, `Qwen/Qwen2.5-0.5B-Instruct`, một GPU cho một replica, context 4096, GPU meTrack 3 mory target 0.80.
 
 ## Kết luận về khả năng chạy trên máy hiện tại
 

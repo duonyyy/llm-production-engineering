@@ -1,5 +1,10 @@
 # Architecture
 
+Core learning covers single-node serving, RAG, observability and bounded
+agent/MCP. Kubernetes and P/D multi-GPU sections are optional
+[Advanced Track](../ADVANCED_TRACK.md) material and do not block core
+completion.
+
 ## Purpose
 
 The labs evolve from a single inference process to an integrated inference and
