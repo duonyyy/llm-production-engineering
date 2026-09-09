@@ -10,6 +10,9 @@ This file records decisions that shape the lab suite. A decision is not proof th
 | D004 | Keep prefill/decode disaggregation as a reference topology. | It generally needs a topology and telemetry unavailable on a 4 GB laptop GPU. | The repository can validate configs/contracts locally but must not invent performance data. |
 | D005 | Use explicit agent/MCP allowlists and default-deny authorization. | Model text is untrusted and cannot grant authority. | Denial paths are first-class tests and every tool has a bounded schema. |
 | D006 | Keep observability identifiers correlated but opaque. | Troubleshooting requires joins across components while evidence must not leak prompts or credentials. | Use task/request/tool IDs; sanitize logs and benchmark artifacts. |
+| D007 | Make the Final Lab single-node and exclude Kubernetes from its runtime scope. | The available GTX 3050 4 GB device cannot validate cluster scheduling or autoscaling. | Keep Lab 02 independent; use Nginx/FastAPI/local observability in Final Lab. |
+| D008 | Reserve GPU VRAM for vLLM and run local RAG embedding/indexing on CPU/RAM. | A 4 GB GPU is the limiting resource for inference; competing embedding workloads would make the baseline unreliable. | Use local FAISS by default; add a reranker only after an evidence-backed comparison. |
+| D009 | A required RAG request must abstain when authorized evidence is unavailable. | A plain-LLM fallback would hide retrieval failure and can fabricate unsupported claims. | Preserve retrieval/index metadata and return `insufficient_evidence` rather than invent citations. |
 
 ## When to change a decision
 

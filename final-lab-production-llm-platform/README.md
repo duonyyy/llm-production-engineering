@@ -22,21 +22,23 @@ fabricate success, citations, or metrics.
 
 ## Start here
 
-1. Read [contracts/api_contract.yaml](contracts/api_contract.yaml),
+1. Read the canonical [architecture](ARCHITECTURE.md).
+2. Read [contracts/api_contract.yaml](contracts/api_contract.yaml),
    [contracts/metrics_schema.yaml](contracts/metrics_schema.yaml), and
    [contracts/error_policy.md](contracts/error_policy.md).
-2. Use the local profile in
+3. Use the local profile in
    [inference/local-rtx3050-4gb.yaml](inference/local-rtx3050-4gb.yaml) only
    for the GTX 3050 Laptop GPU 4 GB baseline.
-3. Implement each boundary in its own directory. Do not import or rewrite a
+4. Implement each boundary in its own directory. Do not import or rewrite a
    Lab 01–03 artifact until its interface is mapped and tested.
-4. Record actual runs under `results/` and write the outcome with the template
+5. Record actual runs under `results/` and write the outcome with the template
    in [report/final_report_template.md](report/final_report_template.md).
 
 ## Directory map
 
 | Path | Responsibility | Current state |
 |---|---|---|
+| `ARCHITECTURE.md` | canonical component, trust and data-flow design | versioned design |
 | `contracts/` | API, metrics and failure contracts | versioned design |
 | `inference/` | model-server profiles and serving boundary | local profile only |
 | `router/` | route selection and fallback contract | design only |

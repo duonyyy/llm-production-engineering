@@ -17,6 +17,7 @@ shared contracts that make the labs comparable.
 | understand a trade-off | [Architecture decisions](DECISIONS.md) |
 | make an agent-led change | [Agent instructions](../AGENTS.md), then [Contributing](../CONTRIBUTING.md) |
 | implement the Final Lab | [Final Lab scaffold](../final-lab-production-llm-platform/README.md) |
+| design the Final Lab | [Canonical architecture](../final-lab-production-llm-platform/ARCHITECTURE.md) |
 
 ## Documentation contract
 

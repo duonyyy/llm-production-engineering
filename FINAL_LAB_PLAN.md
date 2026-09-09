@@ -19,6 +19,11 @@ autoscaling hay vận hành cluster.
 
 ## 2. Kiến trúc mục tiêu
 
+Thiết kế canonical chi tiết nằm ở
+[`final-lab-production-llm-platform/ARCHITECTURE.md`](final-lab-production-llm-platform/ARCHITECTURE.md).
+Plan này quyết định scope/gate; architecture document quyết định ownership và
+luồng dữ liệu khi hai tài liệu cần được đọc cùng nhau.
+
 ```text
 User
   ↓
