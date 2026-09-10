@@ -181,5 +181,7 @@ freshness, retrieval latency và E2E latency.
    is measured, not assumed.
 6. Failure: declared scenarios return the bounded terminal state.
 
-Hiện repository mới hoàn thành scaffold/static design. Runtime, knowledge base,
-index, monitoring và benchmark gate đều `NOT_RUN`.
+Core source implementation is now versioned for the FastAPI gateway, vLLM HTTP
+client, CPU FAISS ingestion/retrieval, SQLite audit, local operations boundary,
+Nginx and Prometheus configuration. This is `STATIC` only. Runtime, knowledge
+base/index, Nginx, Prometheus/Grafana and benchmark gates remain `NOT_RUN`.

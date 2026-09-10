@@ -1,14 +1,14 @@
 schema_version: final-lab/v1
-status: DESIGN_ONLY
+status: IMPLEMENTED_NOT_RUN
 scrape_targets:
   - component: nginx
-    endpoint: NOT_CONFIGURED
+    endpoint: http://127.0.0.1:8081/metrics
     required: false
   - component: fastapi
-    endpoint: NOT_CONFIGURED
+    endpoint: emitted_by_fastapi_metrics_endpoint
     required: true
   - component: rag
-    endpoint: NOT_CONFIGURED
+    endpoint: emitted_by_fastapi_metrics_endpoint
     required_when_rag_enabled: true
   - component: agent_mcp
     endpoint: NOT_CONFIGURED

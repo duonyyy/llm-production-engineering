@@ -53,8 +53,11 @@ does not change that stance.
 `final-lab-production-llm-platform/` contains the versioned directory
 structure, contracts, local hardware profile, CPU RAG/observability boundaries,
 benchmark/failure matrices and report template for the integrated Final Lab.
-This is `DESIGN_ONLY`: it has no integrated runtime, knowledge-base/index,
-benchmark output, Prometheus/Grafana stack or P/D measurement. Runtime claims
-remain `NOT_RUN` until the required gate and raw evidence exist.
+The Core source implementation is now present: FastAPI, vLLM HTTP client,
+FAISS ingestion/retrieval, bounded operations, SQLite audit, Nginx and
+Prometheus configuration. This is a `STATIC` implementation claim only; it
+has no recorded GPU, vLLM, knowledge-base/index, benchmark, Nginx or
+Prometheus/Grafana runtime result. Those gates remain `NOT_RUN` until raw
+evidence exists.
 
 Advanced P/D evidence is optional and does not block core Final Lab completion.

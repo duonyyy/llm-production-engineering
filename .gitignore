@@ -18,6 +18,8 @@ dist/
 *.sqlite3
 *.log
 *.pid
+.runtime/
+.runtime-*/
 
 # Generated benchmark tables; keep the directory marker
 **/results/*.csv
